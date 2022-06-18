@@ -1,39 +1,16 @@
-import React, {useEffect, useState} from "react"
+import React from "react"
 // @ts-ignore
 import { HexGrid, Layout, Hexagon, Text, GridGenerator } from "react-hexgrid";
 import {RNGService, Tile} from "../../services/RNGService";
+import { useMap } from "./useMap";
 
-const getTileKey = (x: number, y: number, z: number) => {
+export const getTileKey = (x: number, y: number, z: number) => {
   return `_${x},${y},${z}`;
 }
 
 export const App: React.FC = () => {
-  const [map, setMap] = useState<Tile[]>([]);
-
   const hexagons = GridGenerator.hexagon(1);
-
-  useEffect(() => {
-    // game init
-    (async () => {
-      const newMapData = await RNGService.getMap([]);
-      let newIndexedMap = hexagons.reduce((acc: Record<string, Tile>, hex: any) => {
-        acc[getTileKey(hex.q, hex.r, hex.s)] = {
-          x: hex.q,
-          y: hex.r,
-          z: hex.s,
-          value: 0,
-        }
-        return acc;
-      }, {});
-
-      newMapData.forEach((tile: Tile) => {
-        newIndexedMap[getTileKey(tile.x, tile.y, tile.z)] = tile;
-      });
-
-      const newMap = Object.values(newIndexedMap) as Tile[];
-      setMap(newMap);
-    })()
-  }, []);
+  const map = useMap(hexagons);
 
   // to optimize search for map tiles
   const indexedMap = map.reduce((acc: Record<string, Tile>, tile) => {
