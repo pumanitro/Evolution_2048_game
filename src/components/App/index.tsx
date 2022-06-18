@@ -20,6 +20,7 @@ export const App: React.FC = () => {
     })()
   }, []);
 
+  // to optimize search for map tiles
   const indexedMap = map.reduce((acc: Record<string, Tile>, tile) => {
     const key = getTileKey(tile.x, tile.y, tile.z);
     acc[key] = tile;
@@ -30,7 +31,6 @@ export const App: React.FC = () => {
     <Layout size={{ x: 6, y: 6 }}>
       { hexagons.map((hex: any, i: number) => {
         const mapTile = indexedMap[getTileKey(hex.q, hex. r, hex.s)];
-
         return <Hexagon key={i} q={hex.q} r={hex.r} s={hex.s}>{
             mapTile &&
             <Text>{mapTile.value}</Text>
