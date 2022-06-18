@@ -15,7 +15,22 @@ export const App: React.FC = () => {
   useEffect(() => {
     // game init
     (async () => {
-      const newMap = await RNGService.getMap([]);
+      const newMapData = await RNGService.getMap([]);
+      let newIndexedMap = hexagons.reduce((acc: Record<string, Tile>, hex: any) => {
+        acc[getTileKey(hex.q, hex.r, hex.s)] = {
+          x: hex.q,
+          y: hex.r,
+          z: hex.s,
+          value: 0,
+        }
+        return acc;
+      }, {});
+
+      newMapData.forEach((tile: Tile) => {
+        newIndexedMap[getTileKey(tile.x, tile.y, tile.z)] = tile;
+      });
+
+      const newMap = Object.values(newIndexedMap) as Tile[];
       setMap(newMap);
     })()
   }, []);
@@ -32,7 +47,7 @@ export const App: React.FC = () => {
       { hexagons.map((hex: any, i: number) => {
         const mapTile = indexedMap[getTileKey(hex.q, hex. r, hex.s)];
         return <Hexagon key={i} q={hex.q} r={hex.r} s={hex.s}>{
-            mapTile &&
+            mapTile && mapTile.value !== 0 &&
             <Text>{mapTile.value}</Text>
         }</Hexagon>
       }) }
