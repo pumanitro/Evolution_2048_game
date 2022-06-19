@@ -1,6 +1,9 @@
 import axios from 'axios';
+import {getParams} from "../components/App/getParams";
 
-const BASE_URL = 'http://localhost:13337/';
+const DEFAULT_PORT = 80;
+
+const BASE_URL = getParams().hostname ? `${getParams().hostname}:${getParams().port || DEFAULT_PORT}/` : 'http://localhost:13337/';
 
 const axiosInstance = axios.create({
     baseURL: BASE_URL,
@@ -15,7 +18,7 @@ export type Tile = {
 
 export const RNGService = {
     getMap: async (map: Tile[]) => {
-        const resp = await axiosInstance.post('2', map);
+        const resp = await axiosInstance.post(getParams().radius || '2', map);
         return resp.data;
     },
 };

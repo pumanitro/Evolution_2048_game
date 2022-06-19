@@ -3,13 +3,14 @@ import React from "react"
 import { HexGrid, Layout, Hexagon, Text, GridGenerator } from "react-hexgrid";
 import {RNGService, Tile} from "../../services/RNGService";
 import { useMap } from "./useMap";
+import {getParams} from "./getParams";
 
 export const getTileKey = (x: number, y: number, z: number) => {
   return `_${x},${y},${z}`;
 }
 
 export const App: React.FC = () => {
-  const hexagons = GridGenerator.hexagon(1);
+  const hexagons = GridGenerator.hexagon(getParams().radius ? getParams().radius - 1 : 1);
   const [map, gameStatus] = useMap(hexagons);
 
   // to optimize search for map tiles
@@ -20,7 +21,7 @@ export const App: React.FC = () => {
   } ,{})
 
   return <>
-    <div>Status: {gameStatus}</div>
+    <div data-status={gameStatus}>Status: {gameStatus}</div>
       <HexGrid width={1200} height={1000}>
       <Layout size={{ x: 6, y: 6 }}>
         { hexagons.map((hex: any, i: number) => {
