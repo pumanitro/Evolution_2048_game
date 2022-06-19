@@ -22,8 +22,8 @@ export const App: React.FC = () => {
 
   return <>
     <div data-status={gameStatus}>Status: {gameStatus}</div>
-      <HexGrid width={1200} height={1000}>
-      <Layout size={{ x: 6, y: 6 }}>
+      <HexGrid width={500} height={500}>
+      <Layout size={{ x: 12, y: 12 }}>
         { hexagons.map((hex: any, i: number) => {
           const mapTile = indexedMap[getTileKey(hex.q, hex. s, hex.r)];
           return <Hexagon key={i} q={hex.q} r={hex.r} s={hex.s}>
