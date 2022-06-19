@@ -82,10 +82,10 @@ export const useMap = (hexagons: any) => {
             }
             const newMapData = await RNGService.getMap(map.filter(el => el.value !== 0));
             let newIndexedMap = hexagons.reduce((acc: Record<string, Tile>, hex: any) => {
-                acc[getTileKey(hex.q, hex.r, hex.s)] = {
+                acc[getTileKey(hex.q, hex.s, hex.r)] = {
                     x: hex.q,
-                    y: hex.r,
-                    z: hex.s,
+                    y: hex.s,
+                    z: hex.r,
                     value: 0,
                 }
                 return acc;
@@ -105,10 +105,10 @@ export const useMap = (hexagons: any) => {
 
     useEffect(() => {
         if(isQClicked) {
-            shiftMapByAxis('y', true);
+            shiftMapByAxis('z', true);
         }
         else if(isDClicked) {
-            shiftMapByAxis('y', false);
+            shiftMapByAxis('z', false);
         }
         else if(isWClicked) {
             shiftMapByAxis('x', true);
@@ -117,10 +117,10 @@ export const useMap = (hexagons: any) => {
             shiftMapByAxis('x', false);
         }
         else if(isAClicked) {
-            shiftMapByAxis('z', true);
+            shiftMapByAxis('y', true);
         }
         else if(isEClicked) {
-            shiftMapByAxis('z', false);
+            shiftMapByAxis('y', false);
         }
 
     }, [isQClicked, isWClicked, isEClicked, isAClicked, isSClicked, isDClicked]);

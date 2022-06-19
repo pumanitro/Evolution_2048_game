@@ -25,7 +25,7 @@ export const App: React.FC = () => {
       <HexGrid width={1200} height={1000}>
       <Layout size={{ x: 6, y: 6 }}>
         { hexagons.map((hex: any, i: number) => {
-          const mapTile = indexedMap[getTileKey(hex.q, hex. r, hex.s)];
+          const mapTile = indexedMap[getTileKey(hex.q, hex. s, hex.r)];
           return <Hexagon key={i} q={hex.q} r={hex.r} s={hex.s}>
             <>
               {
