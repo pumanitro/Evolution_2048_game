@@ -17,9 +17,12 @@ export const getRowsByAxis = (axis: AxisType, map: Tile[]) => {
     }, {}));
 }
 
+type GameStatusType = 'playing' | 'game-over';
+
 // todo add library definitions
 export const useMap = (hexagons: any) => {
     const [map, setMap] = useState<Tile[]>([]);
+    const [gameStatus, setGameStatus] = useState<GameStatusType>('playing')
     const shouldRetrieveMap = useRef(true);
 
     const isQClicked = useKeyPress('q');
@@ -29,12 +32,38 @@ export const useMap = (hexagons: any) => {
     const isSClicked = useKeyPress('s');
     const isDClicked = useKeyPress('d');
 
+    const isShiftPossibleByAxis = (axis: AxisType, shouldReverse: boolean) => {
+        const rows = getRowsByAxis(axis, map);
+        let isShiftPossible = false;
+        rows.forEach(row => {
+            let rowValues = row.map(el => el.value);
+            if(shouldReverse) {
+                rowValues = reverse(rowValues);
+            }
+            let shiftedValues = shiftRowRight(rowValues, row.length);
+            if(shouldReverse) {
+                shiftedValues = shiftedValues.reverse();
+            }
+            row.forEach((el, index) => {
+                if(el.value !== shiftedValues[index]) {
+                    isShiftPossible = true;
+                }
+            })
+            return row;
+        });
+        return isShiftPossible;
+    }
+
     const shiftMapByAxis = (axis: AxisType, shouldReverse: boolean) => {
         const rows = getRowsByAxis(axis, map);
         const newRows = rows.map(row => {
-            let shiftedValues = shiftRowRight(row.map(el => el.value), row.length);
+            let rowValues = row.map(el => el.value);
             if(shouldReverse) {
-                shiftedValues = reverse(shiftedValues);
+                rowValues = reverse(rowValues);
+            }
+            let shiftedValues = shiftRowRight(rowValues, row.length);
+            if(shouldReverse) {
+                shiftedValues = shiftedValues.reverse();
             }
             row.forEach((el, index) => {
                 el.value = shiftedValues[index];
@@ -94,5 +123,16 @@ export const useMap = (hexagons: any) => {
 
     }, [isQClicked, isWClicked, isEClicked, isAClicked, isSClicked, isDClicked]);
 
-    return map;
+    useEffect(() => {
+        const isAnyMovePossible = isShiftPossibleByAxis('x', true) ||
+            isShiftPossibleByAxis('x', false) ||
+            isShiftPossibleByAxis('y', true) ||
+            isShiftPossibleByAxis('y', false) ||
+            isShiftPossibleByAxis('z', true) ||
+            isShiftPossibleByAxis('z', false);
+
+        setGameStatus(isAnyMovePossible ? 'playing' : 'game-over');
+    },[map])
+
+    return [map, gameStatus] as [Tile[], GameStatusType];
 }
