@@ -26,10 +26,17 @@ export const App: React.FC = () => {
       <Layout size={{ x: 6, y: 6 }}>
         { hexagons.map((hex: any, i: number) => {
           const mapTile = indexedMap[getTileKey(hex.q, hex. r, hex.s)];
-          return <Hexagon key={i} q={hex.q} r={hex.r} s={hex.s}>{
-              mapTile && mapTile.value !== 0 &&
-              <Text>{mapTile.value}</Text>
-          }</Hexagon>
+          return <Hexagon key={i} q={hex.q} r={hex.r} s={hex.s}>
+            <>
+              {
+                mapTile && mapTile.value !== 0 &&
+                <Text>{mapTile.value}</Text>
+              }
+              {
+                mapTile && <span data-x={hex.q} data-y={hex.r} data-z={hex.s} data-value={mapTile.value} />
+              }
+          </>
+          </Hexagon>
         }) }
       </Layout>
     </HexGrid>
