@@ -29,6 +29,22 @@ export const useMap = (hexagons: any) => {
     const isSClicked = useKeyPress('s');
     const isDClicked = useKeyPress('d');
 
+    const shiftMapByAxis = (axis: AxisType, shouldReverse: boolean) => {
+        const rows = getRowsByAxis(axis, map);
+        const newRows = rows.map(row => {
+            let shiftedValues = shiftRowRight(row.map(el => el.value), row.length);
+            if(shouldReverse) {
+                shiftedValues = reverse(shiftedValues);
+            }
+            row.forEach((el, index) => {
+                el.value = shiftedValues[index];
+            })
+            return row;
+        });
+        shouldRetrieveMap.current = true;
+        setMap(_.flatten(newRows));
+    }
+
     // game init
     useEffect(() => {
         (async () => {
@@ -58,17 +74,22 @@ export const useMap = (hexagons: any) => {
 
     useEffect(() => {
         if(isQClicked) {
-            const rows = getRowsByAxis('y', map);
-            const newRows = rows.map(row => {
-                const shiftedValues = reverse(shiftRowRight(row.map(el => el.value), row.length));
-                row.forEach((el, index) => {
-                    el.value = shiftedValues[index];
-                })
-                return row;
-            });
-            shouldRetrieveMap.current = true;
-            setMap(_.flatten(newRows));
-            console.log(newRows);
+            shiftMapByAxis('y', true);
+        }
+        else if(isDClicked) {
+            shiftMapByAxis('y', false);
+        }
+        else if(isWClicked) {
+            shiftMapByAxis('x', true);
+        }
+        else if(isSClicked) {
+            shiftMapByAxis('x', false);
+        }
+        else if(isAClicked) {
+            shiftMapByAxis('z', true);
+        }
+        else if(isEClicked) {
+            shiftMapByAxis('z', false);
         }
 
     }, [isQClicked, isWClicked, isEClicked, isAClicked, isSClicked, isDClicked]);
