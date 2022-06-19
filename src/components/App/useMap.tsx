@@ -92,7 +92,9 @@ export const useMap = (hexagons: any) => {
             }, {});
 
             [...map, ...newMapData].forEach((tile: Tile) => {
-                newIndexedMap[getTileKey(tile.x, tile.y, tile.z)] = tile;
+                if(newIndexedMap[getTileKey(tile.x, tile.y, tile.z)].value === 0) {
+                    newIndexedMap[getTileKey(tile.x, tile.y, tile.z)] = tile;
+                }
             });
 
             const newMap = Object.values(newIndexedMap) as Tile[];

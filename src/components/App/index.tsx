@@ -33,7 +33,7 @@ export const App: React.FC = () => {
                 <Text>{mapTile.value}</Text>
               }
               {
-                mapTile && <span data-x={hex.q} data-y={hex.r} data-z={hex.s} data-value={mapTile.value} />
+                mapTile && <span data-x={hex.q} data-y={hex.s} data-z={hex.r} data-value={mapTile.value} />
               }
           </>
           </Hexagon>
