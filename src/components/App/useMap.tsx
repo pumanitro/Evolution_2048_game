@@ -65,13 +65,27 @@ export const useMap = (hexagons: any) => {
             if(shouldReverse) {
                 shiftedValues = shiftedValues.reverse();
             }
-            row.forEach((el, index) => {
-                el.value = shiftedValues[index];
+            const newRow = row.map((el, index) => {
+                return {
+                    ...el,
+                    value: shiftedValues[index],
+                }
             })
-            return row;
+            return newRow;
         });
-        shouldRetrieveMap.current = true;
-        setMap(_.flatten(newRows));
+
+        const newMap = _.flatten(newRows);
+        let isMapChanged = false;
+        map.forEach((tile, i) => {
+            if(newMap[i].value !== map[i].value) {
+                isMapChanged = true;
+            }
+        })
+
+        if(isMapChanged) {
+            shouldRetrieveMap.current = true;
+            setMap(newMap);
+        }
     }
 
     // game init
